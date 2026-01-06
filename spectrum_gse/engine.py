@@ -1,8 +1,7 @@
 """
-q_lock_engine.py
+Spectrum GSE deterministic stabilizer and analysis helpers.
 
-Core Q-LOCK Attractor Engine module.
-Identity-locked, hardware-agnostic quantum circuit watermarking.
+Canonical v1.0.0 — behaviorally frozen, deterministic, and topology-safe.
 """
 
 from __future__ import annotations
@@ -10,108 +9,77 @@ from __future__ import annotations
 import hashlib
 import math
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 
 try:
     from qiskit import QuantumCircuit, transpile
     from qiskit_aer import AerSimulator
+    from qiskit.qasm2 import loads as qasm2_loads
+
     QISKIT_AVAILABLE = True
 except Exception:  # pragma: no cover
     QuantumCircuit = Any  # type: ignore
-    AerSimulator = Any    # type: ignore
-    transpile = None      # type: ignore
+    AerSimulator = Any  # type: ignore
+    transpile = None  # type: ignore
+    qasm2_loads = None  # type: ignore
     QISKIT_AVAILABLE = False
 
 
-# ------------------------------------------------------------------
-# Identity encoding
-# ------------------------------------------------------------------
+SPECTRUM_GSE = "1.0.0"
+
 
 def identity_vector(identity: str, dim: int = 100_200) -> np.ndarray:
     """
     Encode an identity string into a deterministic, normalized real vector.
-
-    The details of this embedding are part of AttraQtor Labs' proprietary
-    attractor logic; the implementation here is intentionally simple,
-    side‑effect‑free, and stable across platforms.
     """
-    digest = hashlib.sha256(identity.encode("utf-8")).digest()
-    base = np.frombuffer(digest, dtype=np.uint8).astype(np.float64) / 255.0
-
     if dim <= 0:
         raise ValueError("dim must be positive")
 
+    digest = hashlib.sha256(identity.encode("utf-8")).digest()
+    base = np.frombuffer(digest, dtype=np.uint8).astype(np.float64) / 255.0
+
     reps = math.ceil(dim / base.size)
     tiled = np.tile(base, reps)[:dim]
-
     tiled -= tiled.mean()
     norm = np.linalg.norm(tiled)
-    if norm == 0.0:
-        return np.zeros(dim, dtype=np.float64)
-    return tiled / norm
+    return tiled / norm if norm else np.zeros(dim, dtype=np.float64)
 
 
-# ------------------------------------------------------------------
-# Private latent transform (opaque attractor core)
-# ------------------------------------------------------------------
-
-def _latent_transform(v: np.ndarray) -> np.ndarray:
+def _stability_projection(v: np.ndarray) -> np.ndarray:
     """
-    Proprietary latent-space transformation.
-
-    Public guarantee:
-        - deterministic
-        - norm-bounded
-        - invertibility or internal structure are *not* guaranteed and
-          are intentionally obscured for IP protection.
-
-    This is a lightweight stand‑in for the full EMLP + golden‑lattice
-    engine used internally at AttraQtor Labs.
+    Lightweight, deterministic mixing used to produce a bounded stabilizer vector.
     """
     v = v.astype(np.float64)
-    # Small non-linear squash + mixing that preserves scale on average
-    w = np.tanh(0.12 * v)
-    # Simple orthogonal-like mixing via FFT phase shuffle
-    fft = np.fft.rfft(w)
+    mixed = np.tanh(0.12 * v)
+    fft = np.fft.rfft(mixed)
     phases = np.exp(1j * np.linspace(0.0, 2.0 * math.pi, fft.size))
-    mixed = np.fft.irfft(fft * phases, n=v.size).real
-    mixed -= mixed.mean()
-    n = np.linalg.norm(mixed)
-    return mixed / n if n > 0 else mixed
+    blended = np.fft.irfft(fft * phases, n=v.size).real
+    blended -= blended.mean()
+    norm = np.linalg.norm(blended)
+    return blended / norm if norm else blended
 
 
-# ------------------------------------------------------------------
-# Public engine configuration and API
-# ------------------------------------------------------------------
-
-@dataclass
-class QLockConfig:
+@dataclass(frozen=True)
+class SpectrumGSEConfig:
     latent_dim: int = 100_200
-    epsilon_angle: float = 0.01  # strength of angle perturbations
+    epsilon_angle: float = 0.01
 
 
-class QLockAttractorEngine:
+class SpectrumGSE:
     """
-    Q-LOCK Attractor Engine
+    Deterministic Spectrum GSE stabilizer.
 
-    • identity: stable observer / user / system identifier
-    • config:  controls latent dimension and perturbation scale
-
-    Public behavior:
-        1. Extract a feature vector from the input circuit.
-        2. Combine with identity embedding.
-        3. Run through proprietary latent transform.
-        4. Feed back into circuit as small, deterministic angle perturbations.
+    - No learning or optimization.
+    - No topology mutation; only bounded angle scaling on rotation gates.
+    - Stable across runs for the same identity and input.
     """
 
-    def __init__(self, identity: str, config: Optional[QLockConfig] = None):
+    def __init__(self, identity: str, config: Optional[SpectrumGSEConfig] = None):
         self.identity = identity
-        self.config = config or QLockConfig()
+        self.config = config or SpectrumGSEConfig()
         self._id_vec = identity_vector(identity, self.config.latent_dim)
-
-    # --------------------- Circuit helpers ---------------------
 
     def _circuit_to_features(self, qc: "QuantumCircuit") -> np.ndarray:
         angles = []
@@ -124,7 +92,6 @@ class QLockAttractorEngine:
                 except Exception:
                     continue
         if not angles:
-            # fallback: gate counts
             counts: Dict[str, int] = {}
             for inst_tuple in qc.data:
                 inst = getattr(inst_tuple, "operation", inst_tuple[0])
@@ -145,13 +112,13 @@ class QLockAttractorEngine:
             v = v[: self.config.latent_dim]
         return v
 
-    def _apply_latent_to_circuit(self, qc: "QuantumCircuit", latent: np.ndarray) -> "QuantumCircuit":
+    def _apply_vector(self, qc: "QuantumCircuit", stabilizer: np.ndarray) -> "QuantumCircuit":
         if not QISKIT_AVAILABLE:
             return qc
 
         eps = self.config.epsilon_angle
         out = qc.copy()
-        real = latent.real
+        real = stabilizer.real
         n = real.size
         idx = 0
         new_data = []
@@ -181,23 +148,19 @@ class QLockAttractorEngine:
         out.data = new_data
         return out
 
-    # ---------------------- Public methods ---------------------
-
-    def lock(self, circuit_or_qasm: Any) -> Any:
+    def stabilize(self, circuit_or_qasm: Any) -> Any:
         """
-        Lock a circuit or QASM2 string.
-
-        If Qiskit is unavailable or parsing fails, returns the input unchanged.
+        Deterministically stabilize a circuit or QASM2 string.
         """
         if not QISKIT_AVAILABLE:
             return circuit_or_qasm
 
-        from qiskit.qasm2 import loads as qasm2_loads
-
         if isinstance(circuit_or_qasm, str):
             try:
-                qc = qasm2_loads(circuit_or_qasm)
+                qc = qasm2_loads(circuit_or_qasm) if qasm2_loads else None
             except Exception:
+                return circuit_or_qasm
+            if qc is None:
                 return circuit_or_qasm
         elif isinstance(circuit_or_qasm, QuantumCircuit):
             qc = circuit_or_qasm
@@ -205,16 +168,12 @@ class QLockAttractorEngine:
             return circuit_or_qasm
 
         features = self._circuit_to_features(qc)
-        latent_in = 0.7 * features + 0.3 * self._id_vec
-        latent_out = _latent_transform(latent_in)
+        stabilizer_in = 0.7 * features + 0.3 * self._id_vec
+        stabilizer_vec = _stability_projection(stabilizer_in)
 
-        return self._apply_latent_to_circuit(qc, latent_out)
+        return self._apply_vector(qc, stabilizer_vec)
 
     def simulate(self, qc: "QuantumCircuit", shots: int = 1024) -> Dict[str, int]:
-        """
-        Convenience wrapper:
-            transpile → measure_all → simulate on Aer → return counts.
-        """
         if not QISKIT_AVAILABLE:
             raise RuntimeError("Qiskit + qiskit-aer required for simulation.")
 
@@ -224,3 +183,66 @@ class QLockAttractorEngine:
         compiled = transpile(circ, sim)
         result = sim.run(compiled, shots=shots).result()
         return result.get_counts(0)
+
+
+class ValidatorEngine(SpectrumGSE):
+    """
+    Validation-oriented wrapper. Mirrors SpectrumGSE while providing a named validate entry point.
+    """
+
+    def validate(self, circuit_or_qasm: Any) -> Any:
+        return self.stabilize(circuit_or_qasm)
+
+
+class ExplorerEngine(SpectrumGSE):
+    """
+    Analysis wrapper that returns both the stabilized circuit and the intermediate vector.
+    """
+
+    def analyze(self, circuit_or_qasm: Any) -> Tuple[Any, Optional[np.ndarray]]:
+        if not QISKIT_AVAILABLE:
+            return circuit_or_qasm, None
+
+        if isinstance(circuit_or_qasm, str):
+            try:
+                qc = qasm2_loads(circuit_or_qasm) if qasm2_loads else None
+            except Exception:
+                return circuit_or_qasm, None
+            if qc is None:
+                return circuit_or_qasm, None
+        elif isinstance(circuit_or_qasm, QuantumCircuit):
+            qc = circuit_or_qasm
+        else:
+            return circuit_or_qasm, None
+
+        features = self._circuit_to_features(qc)
+        stabilizer_in = 0.7 * features + 0.3 * self._id_vec
+        stabilizer_vec = _stability_projection(stabilizer_in)
+        return self._apply_vector(qc, stabilizer_vec), stabilizer_vec
+
+
+def cli_main() -> None:
+    import argparse
+    import sys
+
+    parser = argparse.ArgumentParser(description="Spectrum GSE deterministic stabilizer")
+    parser.add_argument("--identity", required=True, help="Identity string used for stabilization")
+    parser.add_argument(
+        "--qasm",
+        type=argparse.FileType("r"),
+        help="Optional QASM2 file to stabilize. Falls back to stdin if omitted.",
+    )
+    args = parser.parse_args()
+
+    payload = args.qasm.read() if args.qasm else sys.stdin.read()
+    engine = SpectrumGSE(args.identity)
+    stabilized = engine.stabilize(payload) if payload else payload
+
+    if QISKIT_AVAILABLE and isinstance(stabilized, QuantumCircuit):
+        print(stabilized.qasm())
+    else:
+        print(stabilized)
+
+
+if __name__ == "__main__":  # pragma: no cover
+    cli_main()

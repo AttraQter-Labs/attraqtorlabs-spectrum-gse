@@ -1,3 +1,5 @@
 def test_import():
-    import q_lock_engine
-    assert q_lock_engine is not None
+    import spectrum_gse
+
+    assert spectrum_gse.SpectrumGSE is not None
+    assert spectrum_gse.SPECTRUM_GSE == "1.0.0"

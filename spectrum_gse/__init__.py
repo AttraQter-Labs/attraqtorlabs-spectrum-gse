@@ -1,11 +1,15 @@
-from spectrum_gse import (
+"""
+Spectrum GSE canonical v1.0.0 interface.
+"""
+
+from .engine import (
     SPECTRUM_GSE,
-    ExplorerEngine,
     SpectrumGSE,
     SpectrumGSEConfig,
     ValidatorEngine,
-    cli_main,
+    ExplorerEngine,
     identity_vector,
+    cli_main,
 )
 
 __all__ = [

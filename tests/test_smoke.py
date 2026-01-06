@@ -1,14 +1,10 @@
 """
-Q-Lock Attractor Engine — Minimal Smoke Test Suite
+Spectrum GSE — Minimal Smoke Test Suite
 
-These tests do NOT touch the proprietary attractor internals.
-They simply confirm:
+These tests confirm:
 - The repo is structured correctly.
 - Dependencies load.
 - Basic files exist.
-
-This gives the project immediate scientific legitimacy and allows
-CI/CD integration later without exposing private IP.
 """
 
 import importlib
