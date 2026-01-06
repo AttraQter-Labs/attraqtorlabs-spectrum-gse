@@ -14,7 +14,7 @@ from typing import Any, Dict, Optional, Tuple
 import numpy as np
 
 try:
-    from qiskit import QuantumCircuit, transpile
+    from qiskit import QuantumCircuit, QiskitError, transpile
     from qiskit_aer import AerSimulator
     from qiskit.qasm2 import loads as qasm2_loads
 
@@ -33,6 +33,9 @@ SPECTRUM_GSE = "1.0.0"
 def identity_vector(identity: str, dim: int = 100_200) -> np.ndarray:
     """
     Encode an identity string into a deterministic, normalized real vector.
+
+    Default dimension keeps parity with earlier research baselines that used
+    ~100k-length identity embeddings for stability sweeps.
     """
     if dim <= 0:
         raise ValueError("dim must be positive")
@@ -89,7 +92,7 @@ class SpectrumGSE:
             if params:
                 try:
                     angles.append(float(params[0]))
-                except Exception:
+                except (TypeError, ValueError):
                     continue
         if not angles:
             counts: Dict[str, int] = {}
@@ -134,13 +137,13 @@ class SpectrumGSE:
                 scale = 1.0 + eps * real[idx % n]
                 try:
                     params[0] = float(params[0]) * scale
-                except Exception:
+                except (TypeError, ValueError):
                     pass
                 idx += 1
 
             try:
                 new_inst = inst.__class__(*params)
-            except Exception:
+            except (TypeError, ValueError):
                 new_inst = inst
 
             new_data.append((new_inst, list(qargs), list(cargs)))
@@ -158,7 +161,7 @@ class SpectrumGSE:
         if isinstance(circuit_or_qasm, str):
             try:
                 qc = qasm2_loads(circuit_or_qasm) if qasm2_loads else None
-            except Exception:
+            except (ValueError, QiskitError):
                 return circuit_or_qasm
             if qc is None:
                 return circuit_or_qasm
@@ -206,7 +209,7 @@ class ExplorerEngine(SpectrumGSE):
         if isinstance(circuit_or_qasm, str):
             try:
                 qc = qasm2_loads(circuit_or_qasm) if qasm2_loads else None
-            except Exception:
+            except (ValueError, QiskitError):
                 return circuit_or_qasm, None
             if qc is None:
                 return circuit_or_qasm, None
