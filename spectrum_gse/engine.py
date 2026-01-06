@@ -28,6 +28,7 @@ except Exception:  # pragma: no cover
 
 
 SPECTRUM_GSE = "1.0.0"
+MAX_PAYLOAD_BYTES = 1_000_000
 
 
 def identity_vector(identity: str, dim: int = 100_200) -> np.ndarray:
@@ -239,7 +240,7 @@ def cli_main() -> None:
     args = parser.parse_args()
 
     payload = args.qasm.read() if args.qasm else sys.stdin.read()
-    if payload and len(payload) > 1_000_000:
+    if payload and len(payload) > MAX_PAYLOAD_BYTES:
         parser.error("Input payload too large; limit is 1MB for deterministic validation.")
 
     engine = SpectrumGSE(args.identity)

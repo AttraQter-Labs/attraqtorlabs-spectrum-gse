@@ -7,7 +7,7 @@ name = "spectrum-gse"
 version = "1.0.0"
 description = "Deterministic validation and analysis engine"
 authors = [
-  { name = "Spectrum GSE", email = "contact@spectrumgse.example" }
+  { name = "Spectrum GSE", email = "contact@spectrumgse.org" }
 ]
 readme = "README.md"
 requires-python = ">=3.10"
