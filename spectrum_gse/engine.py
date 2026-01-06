@@ -93,6 +93,7 @@ class SpectrumGSE:
                 try:
                     angles.append(float(params[0]))
                 except (TypeError, ValueError):
+                    # Non-numeric parameters are ignored to keep stabilization deterministic.
                     continue
         if not angles:
             counts: Dict[str, int] = {}
@@ -238,6 +239,9 @@ def cli_main() -> None:
     args = parser.parse_args()
 
     payload = args.qasm.read() if args.qasm else sys.stdin.read()
+    if payload and len(payload) > 1_000_000:
+        parser.error("Input payload too large; limit is 1MB for deterministic validation.")
+
     engine = SpectrumGSE(args.identity)
     stabilized = engine.stabilize(payload) if payload else payload
 
