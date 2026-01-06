@@ -3,15 +3,15 @@ requires = ["setuptools>=67", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "qlock"
-version = "0.1.0"
-description = "Q-LOCK Attractor Engine — Identity-Locked Quantum Circuit Stabilization"
+name = "spectrum-gse"
+version = "1.0.0"
+description = "Deterministic validation and analysis engine"
 authors = [
-  { name = "AttraQtor Labs LLC", email = "nic_hensley@proton.me" }
+  { name = "Spectrum GSE", email = "contact@spectrumgse.org" }
 ]
 readme = "README.md"
 requires-python = ">=3.10"
-license = { file = "LICENSE-ATTRAQTOR-LABS.md" }
+license = { file = "LICENSE.md" }
 
 dependencies = [
   "qiskit>=1.0.0",
@@ -21,4 +21,4 @@ dependencies = [
 ]
 
 [project.scripts]
-qlock = "qlock.cli:main"
+spectrum-gse = "spectrum_gse.engine:cli_main"
