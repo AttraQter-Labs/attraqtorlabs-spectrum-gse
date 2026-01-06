@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Benchmarks – Q-Lock Attractor Engine</title>
+  <title>Evaluations – Spectrum GSE</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta
     name="description"
-    content="Benchmark and evaluation plans for the Q-Lock identity-locked quantum circuit engine on simulators and real hardware."
+    content="Evaluation and validation plans for Spectrum GSE v1.0, focused on deterministic, non-learning analysis of quantum circuits."
   />
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
@@ -15,16 +15,15 @@
   <header class="site-header">
     <div class="container header-inner">
       <a href="index.html" class="brand">
-        <img src="assets/img/qlock-logo.svg" alt="Q-Lock logo" class="brand-logo" />
         <div class="brand-text">
-          <span class="brand-title">Q-Lock Attractor Engine</span>
-          <span class="brand-subtitle">Benchmarks</span>
+          <span class="brand-title">Spectrum GSE</span>
+          <span class="brand-subtitle">Deterministic Validation Engine</span>
         </div>
       </a>
       <nav class="nav">
         <a href="index.html">Home</a>
-        <a href="product.html">Product</a>
-        <a href="pricing.html">Pricing</a>
+        <a href="product.html">Capabilities</a>
+        <a href="pricing.html">Access</a>
       </nav>
     </div>
   </header>
@@ -32,11 +31,11 @@
   <main>
     <section class="page-hero">
       <div class="container page-hero-inner">
-        <h1>Benchmarks &amp; evaluation</h1>
+        <h1>Evaluations</h1>
         <p>
-          Q-Lock is being evaluated on both simulators and real hardware to
-          measure stability, distribution preservation, and sensitivity to
-          compilation changes.
+          Spectrum GSE v1.0 is validated through deterministic test plans that emphasize
+          reproducibility. No adaptive learning or control paths are used; all behaviors are fixed
+          and documented.
         </p>
       </div>
     </section>
@@ -44,34 +43,32 @@
     <section class="section">
       <div class="container section-inner">
         <div class="section-header">
-          <h2>Benchmark goals</h2>
+          <h2>Validation objectives</h2>
           <p>
-            The goal is not to claim “magic error correction,” but to rigorously
-            quantify when identity-locked perturbations improve stability and
-            how they affect distributions under realistic noise.
+            The evaluation program measures determinism, coverage of checks, and clarity of artifacts
+            produced by Spectrum GSE.
           </p>
         </div>
 
         <div class="grid grid-3">
           <div class="card">
-            <h3>Distribution fidelity</h3>
+            <h3>Deterministic repeatability</h3>
             <p>
-              Compare locked vs. unlocked circuits on noiseless simulators to
-              confirm that ideal distributions remain effectively unchanged.
+              Verify that identical inputs yield identical reports and artifacts across runs and
+              environments.
             </p>
           </div>
           <div class="card">
-            <h3>Stability under noise</h3>
+            <h3>Evidence fidelity</h3>
             <p>
-              Measure histogram variance across repeated runs with depolarizing
-              and relaxation noise, with and without Q-Lock.
+              Confirm that generated manifests, hashes, and diffs are sufficient for academic or
+              enterprise review without relying on heuristics.
             </p>
           </div>
           <div class="card">
-            <h3>Compiler sensitivity</h3>
+            <h3>Non-adaptive assurance</h3>
             <p>
-              Vary layout and optimization settings to see whether Q-Lock
-              circuits exhibit reduced sensitivity to compilation drift.
+              Demonstrate that no learning, tuning, or control loops are invoked during validation.
             </p>
           </div>
         </div>
@@ -81,37 +78,35 @@
     <section class="section section-alt">
       <div class="container section-inner">
         <div class="section-header">
-          <h2>Planned hardware examples</h2>
+          <h2>Planned scenarios</h2>
           <p>
-            Hardware benchmarks will be documented using blurred or anonymized
-            screenshots and summary tables to avoid exposing private backend
-            details while still conveying behavior.
+            Deterministic evaluation scenarios spanning structured and randomized circuits, reported
+            with reproducible manifests.
           </p>
         </div>
 
         <div class="grid grid-2">
           <div class="card">
-            <h3>GHZ-style chains</h3>
+            <h3>Structured circuits</h3>
             <p>
-              4–12 qubit GHZ circuits used as a baseline for locking behavior:
-              measuring how well the <code>|00...0⟩</code> and
-              <code>|11...1⟩</code> peaks are preserved under noise.
+              GHZ-style chains and other structured topologies used to verify invariants, report
+              stability of outputs, and validate instrumentation notes.
             </p>
           </div>
           <div class="card">
-            <h3>Random entangling ladders</h3>
+            <h3>Randomized topologies</h3>
             <p>
-              Higher-depth random entangling networks designed to probe how
-              identity-locked perturbations interact with more chaotic circuits.
+              Random entangling ladders and parameterized networks used to confirm that documentation
+              and manifests remain deterministic under varied layouts.
             </p>
           </div>
         </div>
 
         <div class="card card-note">
           <p>
-            As benchmarks are finalized, this page will link to concrete results
-            in the <code>/benchmarks/</code> directory and include before/after
-            plots for representative experiments.
+            As evaluation artifacts are finalized, this page will link to reports and manifests in
+            the <code>/benchmarks/</code> directory. All outputs will retain deterministic,
+            non-learning behavior.
           </p>
         </div>
       </div>
@@ -120,7 +115,7 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <span>© AttraQtor Labs LLC — Q-Lock Attractor Engine</span>
+      <span>© Spectrum GSE v1.0 — Deterministic analysis and validation.</span>
     </div>
   </footer>
 </body>
