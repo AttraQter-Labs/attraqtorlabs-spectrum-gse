@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Product – Q-Lock Attractor Engine</title>
+  <title>Capabilities – Spectrum GSE</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta
     name="description"
-    content="Deep dive into Q-Lock: identity-locked perturbation engine for quantum circuits, designed for provenance, auditability, and stability."
+    content="Learn how Spectrum GSE v1.0 performs deterministic, non-learning validation of quantum circuits and produces reproducible evidence."
   />
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
@@ -15,16 +15,15 @@
   <header class="site-header">
     <div class="container header-inner">
       <a href="index.html" class="brand">
-        <img src="assets/img/qlock-logo.svg" alt="Q-Lock logo" class="brand-logo" />
         <div class="brand-text">
-          <span class="brand-title">Q-Lock Attractor Engine</span>
-          <span class="brand-subtitle">Product Overview</span>
+          <span class="brand-title">Spectrum GSE</span>
+          <span class="brand-subtitle">Deterministic Validation Engine</span>
         </div>
       </a>
       <nav class="nav">
         <a href="index.html">Home</a>
-        <a href="benchmarks.html">Benchmarks</a>
-        <a href="pricing.html">Pricing</a>
+        <a href="benchmarks.html">Evaluations</a>
+        <a href="pricing.html">Access</a>
       </nav>
     </div>
   </header>
@@ -32,12 +31,11 @@
   <main>
     <section class="page-hero">
       <div class="container page-hero-inner">
-        <h1>Product Overview</h1>
+        <h1>Capabilities</h1>
         <p>
-          Q-Lock is a deterministic, identity-locked pre-processing engine for
-          quantum circuits. It applies tiny, structured perturbations that
-          preserve your circuit’s logical intent while stabilizing its behavior
-          under noise and compilation drift.
+          Spectrum GSE v1.0 is a deterministic gate-set evaluation engine. It inspects circuits,
+          applies controlled instrumentation, and emits validation artifacts without any learning,
+          optimization, or adaptive behavior.
         </p>
       </div>
     </section>
@@ -45,38 +43,33 @@
     <section class="section">
       <div class="container section-inner">
         <div class="section-header">
-          <h2>Core value proposition</h2>
+          <h2>Core principles</h2>
           <p>
-            Instead of hoping that your circuits behave on noisy hardware,
-            Q-Lock gives you a mathematically controlled way to encode identity,
-            preserve distributions, and stabilize behavior — all without
-            touching the algorithmic logic of the circuit.
+            Every capability is grounded in reproducibility and clarity for reviewers, auditors, and
+            engineering teams.
           </p>
         </div>
 
         <div class="grid grid-3">
           <div class="card">
-            <h3>Identity as a first-class signal</h3>
+            <h3>Deterministic execution</h3>
             <p>
-              Identity strings are turned into high-dimensional vectors that
-              shape how your circuit sits in the noise landscape, giving you
-              cryptographic provenance and non-repudiation flavor by design.
+              Fixed, documented rules determine how circuits are checked and instrumented. The same
+              inputs always produce the same outputs.
             </p>
           </div>
           <div class="card">
-            <h3>Logic-preserving perturbations</h3>
+            <h3>Non-learning pipeline</h3>
             <p>
-              Perturbations are small and structured: they maintain algorithmic
-              equivalence on ideal simulators while often improving stability
-              under realistic noise models.
+              Spectrum GSE does not train or adapt. There are no control loops or model updates,
+              keeping the analysis explainable and repeatable.
             </p>
           </div>
           <div class="card">
-            <h3>Enterprise-grade auditability</h3>
+            <h3>Evidence-first outputs</h3>
             <p>
-              Every locked circuit corresponds to a deterministic identity hash,
-              allowing teams to trace who generated which circuits and under
-              what configuration.
+              Reports, manifests, and optional instrumented circuits are produced for downstream
+              review, citation, and compliance.
             </p>
           </div>
         </div>
@@ -86,46 +79,40 @@
     <section class="section section-alt">
       <div class="container section-inner">
         <div class="section-header">
-          <h2>Engine flow</h2>
-          <p>
-            From identity string to locked circuit, the engine follows a clear,
-            reproducible set of steps.
-          </p>
+          <h2>Validation flow</h2>
+          <p>How Spectrum GSE v1.0 processes a circuit from intake to artifacts.</p>
         </div>
 
         <div class="grid grid-2">
           <div class="card card-steps">
-            <h3>1. Identity encoding</h3>
+            <h3>1. Intake</h3>
             <ol>
-              <li>Take an arbitrary identity string.</li>
-              <li>Hash with a cryptographic hash (e.g., SHA-256).</li>
-              <li>Expand and normalize into a high-dimensional real vector.</li>
+              <li>Provide an OpenQASM 2.0 file or gate-level circuit object.</li>
+              <li>Select a validation profile documented in the README.</li>
             </ol>
           </div>
           <div class="card card-steps">
-            <h3>2. Latent-space attractor</h3>
+            <h3>2. Static evaluation</h3>
             <ol>
-              <li>Map the vector into a large latent space (e.g., 60k+ dims).</li>
-              <li>Apply a structured, unitary-style attractor iteration.</li>
-              <li>Converge to a deterministic identity signature vector.</li>
+              <li>Run deterministic checks on structure, invariants, and metadata.</li>
+              <li>Apply optional, documented instrumentation steps.</li>
             </ol>
           </div>
         </div>
 
         <div class="grid grid-2">
           <div class="card card-steps">
-            <h3>3. Circuit feature extraction</h3>
+            <h3>3. Outputs</h3>
             <ol>
-              <li>Parse rotation gates and structural features.</li>
-              <li>Normalize them into a feature vector.</li>
+              <li>Generate a validation report with findings and hashes.</li>
+              <li>Export optional instrumented circuit artifacts.</li>
             </ol>
           </div>
           <div class="card card-steps">
-            <h3>4. Fusion &amp; locking</h3>
+            <h3>4. Preservation</h3>
             <ol>
-              <li>Fuse circuit features with the identity signature.</li>
-              <li>Compute small, per-gate angle perturbations.</li>
-              <li>Emit a locked, algorithmically equivalent circuit.</li>
+              <li>Store the manifest for future reproducibility.</li>
+              <li>Share reports for academic, regulatory, or internal review.</li>
             </ol>
           </div>
         </div>
@@ -135,30 +122,30 @@
     <section class="section">
       <div class="container section-inner">
         <div class="section-header">
-          <h2>Public vs. proprietary layers</h2>
+          <h2>Outputs and guarantees</h2>
           <p>
-            The repository exposes everything you need to experiment with Q-Lock
-            while protecting the proprietary attractor core.
+            Spectrum GSE keeps analysis legible for both research collaborators and enterprise
+            stakeholders.
           </p>
         </div>
 
         <div class="grid grid-2">
           <div class="card card-list">
-            <h3>Public</h3>
+            <h3>Artifacts</h3>
             <ul>
-              <li>Notebook-driven interface.</li>
-              <li>QASM2 and <code>QuantumCircuit</code> ingestion.</li>
-              <li>Locked circuit export and simulation helpers.</li>
-              <li>Example circuits and GHZ-style demos.</li>
+              <li>Structured validation reports with checks and summaries.</li>
+              <li>Optional instrumented circuit exports with documented transforms.</li>
+              <li>Hashes and manifests for provenance.</li>
+              <li>CI-friendly outputs for regression validation.</li>
             </ul>
           </div>
           <div class="card card-list">
-            <h3>Proprietary</h3>
+            <h3>Assurances</h3>
             <ul>
-              <li>High-dimensional latent-space attractor math.</li>
-              <li>Phase structure and contraction schedule.</li>
-              <li>Fusion mapping from identity to gate-level perturbations.</li>
-              <li>Enterprise extensions and licensing controls.</li>
+              <li>No learning, tuning, or adaptive decision-making.</li>
+              <li>Deterministic behavior keyed to explicit inputs.</li>
+              <li>Documentation suitable for academic citation or compliance review.</li>
+              <li>Clear boundaries between public configuration and reserved internals.</li>
             </ul>
           </div>
         </div>
@@ -168,7 +155,7 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <span>© AttraQtor Labs LLC — Q-Lock Attractor Engine</span>
+      <span>© Spectrum GSE v1.0 — Deterministic analysis and validation.</span>
     </div>
   </footer>
 </body>
