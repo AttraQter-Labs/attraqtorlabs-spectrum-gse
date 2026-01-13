@@ -21,6 +21,13 @@ def test_readme_exists():
     assert (root / "README.md").exists(), "README.md missing at project root."
 
 
+def test_readme_mentions_archive_status():
+    """Ensure the README communicates the archived status."""
+    root = pathlib.Path(__file__).resolve().parents[1]
+    content = (root / "README.md").read_text().lower()
+    assert "archived" in content and "no longer maintained" in content
+
+
 def test_core_dependencies_import():
     """Ensure publicly declared dependencies import correctly."""
     deps = ["qiskit", "qiskit_aer", "numpy"]

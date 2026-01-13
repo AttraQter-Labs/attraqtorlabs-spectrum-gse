@@ -1,6 +1,8 @@
 # Q-LOCK ATTRACTOR ENGINE  
 **AttraQtor Labs LLC — Identity-Locked Quantum Circuit Stabilization**
 
+> **Status:** This repository is archived and no longer maintained. Content is provided for reference only.
+
 Deterministic, identity-locked perturbations that preserve circuit intent while stabilizing behavior under noise and compilation drift.
 
 ---
